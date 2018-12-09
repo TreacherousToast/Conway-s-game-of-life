@@ -28,12 +28,12 @@ void draw()
   }
   if (update == true)
   {
+    delay(1); // change this to change frequency of updates
     update();
   }
 }
 void update()
 {
-  delay(1); // change this to change frequency of updates
   for (int i = 1; i < isAlive[0].length-1; i++) // y
   {
     for (int j = 1; j < isAlive.length-1; j++) // x
@@ -77,23 +77,32 @@ void update()
 }
 void mouseClicked()
 {
-  if (isAlive[floor(mouseX/10)+xViewBuffer][floor(mouseY/10)+yViewBuffer] == true)
-  {
-    isAlive[floor(mouseX/10)+xViewBuffer][floor(mouseY/10)+yViewBuffer] = false;
-  }
-  else
-  {
-    isAlive[floor(mouseX/10)+xViewBuffer][floor(mouseY/10)+yViewBuffer] = true;
-  }
+  isAlive[floor(mouseX/10)+xViewBuffer][floor(mouseY/10)+yViewBuffer] = !isAlive[floor(mouseX/10)+xViewBuffer][floor(mouseY/10)+yViewBuffer];
 }
 void keyPressed()
 {
-  if (update == false)
+  if (keyCode == ENTER || keyCode == RETURN)
   {
-    update = true;
+    update = !update;
   }
-  else
+  else if (key == ' ')
   {
-    update = false;
+    update();
+  }
+  else if (keyCode == UP && yViewBuffer > 2)
+  {
+    yViewBuffer--;
+  }
+  else if (keyCode == DOWN && yViewBuffer < isAlive[0].length-2)
+  {
+    yViewBuffer++;
+  }
+  else if (keyCode == LEFT && xViewBuffer > 2)
+  {
+    xViewBuffer--;
+  }
+  else if (keyCode == RIGHT && yViewBuffer < isAlive.length-2)
+  {
+    xViewBuffer++;
   }
 }

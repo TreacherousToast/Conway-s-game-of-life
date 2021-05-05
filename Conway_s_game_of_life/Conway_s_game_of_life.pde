@@ -2,6 +2,7 @@ boolean[][] isAlive = new boolean[300][300]; // [x][y]
 boolean[][] updatedLives = new boolean[300][300];
 int xViewOffset = 50;
 int yViewOffset = 50;
+int updatePeriod = 1; // update period in milliseconds
 boolean update = false;
 
 void setup()
@@ -19,14 +20,11 @@ void draw()
       rect(j*10,i*10,10,10);
     }
   }
-  if (update == true)
-  {
-    delay(1); // change this to change frequency of updates
-    update();
-  }
+  if (update) update();
 }
 void update()
 {
+  delay(updatePeriod);
   for (int i = 1; i < isAlive[0].length-1; i++) // y
   {
     for (int j = 1; j < isAlive.length-1; j++) // x
@@ -37,13 +35,13 @@ void update()
           if (isAlive[j+b][i+a] == true)
             neighbours++;
             
-      if (isAlive[j][i] == true) // logic for the cellular automata
+      if (isAlive[j][i]) // logic for the cellular automata
         neighbours--;
-      if (neighbours == 2 && isAlive[j][i] == true || neighbours == 3 && isAlive[j][i] == true)
+      if (neighbours == 2 && isAlive[j][i] || neighbours == 3 && isAlive[j][i])
         updatedLives[j][i] = true;
-      else if (neighbours < 2 && isAlive[j][i] == true || neighbours > 3 && isAlive[j][i] == true)
+      else if (neighbours < 2 && isAlive[j][i] || neighbours > 3 && isAlive[j][i])
         updatedLives[j][i] = false;
-      else if (neighbours == 3 && isAlive[j][i] == false)
+      else if (neighbours == 3 && isAlive[j][i])
         updatedLives[j][i] = true;
     }
   }

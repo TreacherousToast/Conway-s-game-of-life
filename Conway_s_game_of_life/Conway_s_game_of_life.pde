@@ -1,7 +1,7 @@
 boolean[][] isAlive = new boolean[300][300]; // [x][y]
 boolean[][] updatedLives = new boolean[300][300];
-int xViewBuffer = 50;
-int yViewBuffer = 50;
+int xViewOffset = 50;
+int yViewOffset = 50;
 boolean update = false;
 
 void setup()
@@ -15,14 +15,7 @@ void draw()
   {
     for (int j = 0; j < width/10; j++)
     {
-      if (isAlive[j+xViewBuffer][i+yViewBuffer] == true)
-      {
-        fill(0);
-      }
-      else
-      {
-        fill(255);
-      }
+      fill(isAlive[j+xViewOffset][i+yViewOffset] ? 0 : 255);
       rect(j*10,i*10,10,10);
     }
   }
@@ -38,71 +31,43 @@ void update()
   {
     for (int j = 1; j < isAlive.length-1; j++) // x
     {
-      int neighbors = 0;
+      int neighbours = 0; // count neighbours
       for (int a = -1; a < 2; a++)
-      {
         for (int b = -1; b < 2; b++)
-        {
           if (isAlive[j+b][i+a] == true)
-          {
-            neighbors++;
-          }
-        }
-      }
-      if (isAlive[j][i] == true)
-      {
-        neighbors--;
-      }
-      if (neighbors == 2 && isAlive[j][i] == true || neighbors == 3 && isAlive[j][i] == true)
-      {
+            neighbours++;
+            
+      if (isAlive[j][i] == true) // logic for the cellular automata
+        neighbours--;
+      if (neighbours == 2 && isAlive[j][i] == true || neighbours == 3 && isAlive[j][i] == true)
         updatedLives[j][i] = true;
-      }
-      else if (neighbors < 2 && isAlive[j][i] == true || neighbors > 3 && isAlive[j][i] == true)
-      {
+      else if (neighbours < 2 && isAlive[j][i] == true || neighbours > 3 && isAlive[j][i] == true)
         updatedLives[j][i] = false;
-      }
-      else if (neighbors == 3 && isAlive[j][i] == false)
-      {
+      else if (neighbours == 3 && isAlive[j][i] == false)
         updatedLives[j][i] = true;
-      }
     }
   }
+  // update main array
   for (int i = 1; i < isAlive[0].length-1; i++) // y
-  {
     for (int j = 1; j < isAlive.length-1; j++) // x
-    {
       isAlive[j][i] = updatedLives[j][i];
-    }
-  }
 }
 void mouseClicked()
 {
-  isAlive[floor(mouseX/10)+xViewBuffer][floor(mouseY/10)+yViewBuffer] = !isAlive[floor(mouseX/10)+xViewBuffer][floor(mouseY/10)+yViewBuffer];
+  isAlive[floor(mouseX/10)+xViewOffset][floor(mouseY/10)+yViewOffset] = !isAlive[floor(mouseX/10)+xViewOffset][floor(mouseY/10)+yViewOffset];
 }
 void keyPressed()
 {
   if (keyCode == ENTER || keyCode == RETURN)
-  {
     update = !update;
-  }
   else if (key == ' ')
-  {
     update();
-  }
-  else if (keyCode == UP && yViewBuffer > 2)
-  {
-    yViewBuffer--;
-  }
-  else if (keyCode == DOWN && yViewBuffer < isAlive[0].length-2)
-  {
-    yViewBuffer++;
-  }
-  else if (keyCode == LEFT && xViewBuffer > 2)
-  {
-    xViewBuffer--;
-  }
-  else if (keyCode == RIGHT && yViewBuffer < isAlive.length-2)
-  {
-    xViewBuffer++;
-  }
+  else if (keyCode == UP && yViewOffset > 2)
+    yViewOffset--;
+  else if (keyCode == DOWN && yViewOffset < isAlive[0].length-2)
+    yViewOffset++;
+  else if (keyCode == LEFT && xViewOffset > 2)
+    xViewOffset--;
+  else if (keyCode == RIGHT && yViewOffset < isAlive.length-2)
+    xViewOffset++;
 }
